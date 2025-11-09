@@ -1,1 +1,1 @@
-# bloxd.io-2026 survvival Launcher
+# bloxd.io-2026 survival Launcher
