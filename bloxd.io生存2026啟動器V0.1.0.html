@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>生存 2026 啟動器</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      margin: 0;
+      background: linear-gradient(145deg, #141e30, #243b55);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .launcher {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 30px;
+      border-radius: 16px;
+      width: 420px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    h1 { text-align: center; margin-bottom: 24px; }
+    .menu button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.25s;
+      background: #00bfa5;
+      color: #fff;
+      font-weight: 600;
+    }
+    .menu button:hover {
+      background: #1de9b6;
+      transform: translateY(-2px);
+    }
+    #status {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+      color: #ccc;
+    }
+    #overlay {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .popup {
+      background: #1c2739;
+      padding: 20px;
+      border-radius: 10px;
+      width: 360px;
+    }
+    .popup h2 {margin-top:0; color:#1de9b6;}
+    label {display:block; margin:8px 0;}
+  </style>
+</head>
+<body>
+  <div class="launcher">
+    <h1>生存 2026 啟動器</h1>
+    <div class="menu">
+      <button id="startBtn">▶️ 啟動遊戲</button>
+      <button id="pluginBtn">🧩 插件管理</button>
+      <button id="settingsBtn">⚙️ 設定</button>
+    </div>
+    <div id="status">等待操作中...</div>
+  </div>
+
+  <div id="overlay">
+    <div class="popup" id="popupContent"></div>
+  </div>
+
+  <script>
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('popupContent');
+  const statusEl = document.getElementById('status');
+
+  let plugins = [
+    { id: "auto_attack_demo", name: "Auto Attack Demo", enabled: false },
+    { id: "map_radar", name: "地圖雷達", enabled: true },
+    { id: "music_player", name: "音樂播放器", enabled: false },
+  ];
+
+  // 啟動遊戲（開啟生存2026）
+  document.getElementById('startBtn').onclick = () => {
+    statusEl.textContent = "正在連線到『生存 2026』伺服器...";
+    setTimeout(() => {
+      statusEl.textContent = "✅ 已連線成功，正在開啟伺服器...";
+      window.open("https://bloxd.io/play/classic_survival/2026", "_blank");
+    }, 800);
+  };
+
+  // 插件管理
+  document.getElementById('pluginBtn').onclick = () => {
+    overlay.style.display = 'flex';
+    popup.innerHTML = `
+      <h2>插件管理</h2>
+      ${plugins.map(p=>`
+        <label>
+          <input type="checkbox" ${p.enabled ? "checked" : ""} onchange="togglePlugin('${p.id}', this.checked)">
+          ${p.name}
+        </label>
+      `).join('')}
+      <button onclick="closePopup()">關閉</button>
+    `;
+  };
+
+  // 設定
+  document.getElementById('settingsBtn').onclick = () => {
+    overlay.style.display = 'flex';
+    popup.innerHTML = `
+      <h2>設定</h2>
+      <label>解析度：
+        <select id="resolution">
+          <option>1280x720</option>
+          <option selected>1920x1080</option>
+          <option>2560x1440</option>
+        </select>
+      </label>
+      <label>音量：
+        <input type="range" min="0" max="100" value="75" id="volumeSlider">
+      </label>
+      <label><input type="checkbox" id="fullscreen"> 全螢幕模式</label>
+      <button onclick="applySettings()">儲存設定</button>
+      <button onclick="closePopup()">關閉</button>
+    `;
+  };
+
+  function togglePlugin(id, val){
+    const plugin = plugins.find(p=>p.id===id);
+    if(plugin) plugin.enabled = val;
+    console.log("插件狀態更新：", plugins);
+  }
+
+  function applySettings(){
+    const res = document.getElementById('resolution').value;
+    const vol = document.getElementById('volumeSlider').value;
+    const full = document.getElementById('fullscreen').checked;
+    alert(`設定已儲存：\\n解析度=${res}\\n音量=${vol}\\n全螢幕=${full}`);
+  }
+
+  function closePopup(){
+    overlay.style.display = 'none';
+  }
+  </script>
+</body>
+</html>
